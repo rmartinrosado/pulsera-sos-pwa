@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101a2b">
+  <meta name="description" content="PULSERA SOS — panel de configuración y pruebas">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./styles.css">
+  <title>PULSERA SOS</title>
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><div class="brandmark">SOS</div><div><strong>PULSERA SOS</strong><small>Panel de control · versión 1.0</small></div></div>
+  <span class="mode-pill">ENTORNO DE PRUEBAS</span>
+</header>
+<main>
+  <section class="hero">
+    <div><p class="eyebrow">SISTEMA PERSONAL DE EMERGENCIA</p><h1>Tu seguridad,<br><em>bajo control.</em></h1>
+    <p class="muted">Configuración inicial y simulación local de eventos de la pulsera.</p></div>
+    <div class="status-card"><span class="pulse"></span><div><b id="systemStatus">Pulsera no conectada</b><small>Sin dispositivo BLE enlazado</small></div></div>
+  </section>
+  <nav class="tabs" aria-label="Secciones">
+    <button class="tab active" data-tab="home">Resumen</button>
+    <button class="tab" data-tab="tests">Pruebas</button>
+    <button class="tab" data-tab="contacts">Contactos</button>
+    <button class="tab" data-tab="settings">Configuración</button>
+    <button class="tab" data-tab="history">Historial</button>
+  </nav>
+
+  <section class="panel active" id="home">
+    <div class="section-head"><div><p class="eyebrow">ESTADO GENERAL</p><h2>Resumen del sistema</h2></div><span class="tag">DEMO LOCAL</span></div>
+    <div class="metrics">
+      <article class="metric"><span class="metric-icon">⌚</span><small>Dispositivo</small><b>No enlazado</b><span class="muted">BLE pendiente</span></article>
+      <article class="metric"><span class="metric-icon">⌁</span><small>Contactos</small><b id="contactCount">0 / 3</b><span class="muted">Configurados</span></article>
+      <article class="metric"><span class="metric-icon">◷</span><small>Control de inactividad</small><b id="intervalSummary">10 min</b><span class="muted">Intervalo configurado</span></article>
+      <article class="metric"><span class="metric-icon">🔋</span><small>Batería pulsera</small><b>—</b><span class="muted">Sin lectura BLE</span></article>
+    </div>
+    <div class="notice warning"><b>Importante: prototipo, no sistema de seguridad.</b><p>Esta versión no detecta caídas reales, no se conecta a la pulsera y no envía llamadas, SMS ni notificaciones. Las acciones de prueba solo generan registros en este navegador.</p></div>
+    <div class="quick-actions"><button class="primary" data-goto="tests">Abrir pruebas</button><button class="secondary" data-goto="contacts">Configurar contactos</button></div>
+  </section>
+
+  <section class="panel" id="tests">
+    <div class="section-head"><div><p class="eyebrow">SIMULACIÓN CONTROLADA</p><h2>Banco de pruebas</h2></div><span class="tag">SIN AVISOS REALES</span></div>
+    <p class="muted">Simula las entradas que en una futura versión llegarán desde el firmware de la pulsera. Ningún botón contacta con los servicios de emergencia.</p>
+    <div class="test-grid">
+      <article class="test-card"><div class="test-icon">●</div><h3>SOS manual</h3><p>Simula una pulsación larga del botón físico de la pulsera.</p><button class="primary full" data-event="SOS_MANUAL">Simular SOS manual</button></article>
+      <article class="test-card"><div class="test-icon">↯</div><h3>Caída detectada</h3><p>Inicia una prealarma simulada para confirmar o cancelar.</p><button class="secondary full" data-event="FALL_PREALARM">Simular caída</button></article>
+      <article class="test-card"><div class="test-icon">◷</div><h3>Inmovilidad</h3><p>Simula el control periódico. Estar quieto no debe generar por sí solo un SOS.</p><button class="secondary full" data-event="INACTIVITY_CHECK">Simular control</button></article>
+    </div>
+    <div class="notice" id="testResult"><b>Esperando una prueba</b><p>Selecciona un evento para ver su tratamiento.</p></div>
+    <div class="prealarm hidden" id="prealarm"><div><b>Prealarma simulada</b><p>¿Confirmas que necesitas ayuda?</p></div><div class="actions"><button class="danger" id="confirmSOS">Confirmar SOS</button><button class="secondary" id="cancelSOS">Estoy bien · cancelar</button></div><small>En esta versión, ambas opciones solo quedan registradas localmente.</small></div>
+  </section>
+
+  <section class="panel" id="contacts">
+    <div class="section-head"><div><p class="eyebrow">CADENA DE AVISO</p><h2>Contactos de emergencia</h2></div><span class="tag">HASTA 3</span></div>
+    <p class="muted">Introduce los datos que se utilizarán cuando se implemente el servicio de avisos. Se guardan únicamente en este navegador.</p>
+    <form id="contactsForm" class="form-card">
+      <div id="contactFields"></div>
+      <button class="primary" type="submit">Guardar contactos</button>
+      <span class="save-state" id="contactsSave"></span>
+    </form>
+    <div class="notice warning"><b>Privacidad</b><p>No compartas este navegador ni el dispositivo si contiene teléfonos personales. Los datos se guardan en el almacenamiento local del navegador; no se suben a GitHub.</p></div>
+  </section>
+
+  <section class="panel" id="settings">
+    <div class="section-head"><div><p class="eyebrow">PARÁMETROS</p><h2>Configuración</h2></div><span class="tag">LOCAL</span></div>
+    <form id="settingsForm" class="form-card">
+      <label>Nombre del dispositivo<input id="deviceName" maxlength="30" placeholder="PULSERA SOS"></label>
+      <label>Intervalo de comprobación de inmovilidad<select id="inactivityInterval"><option value="5">5 minutos</option><option value="10">10 minutos</option><option value="15">15 minutos</option><option value="20">20 minutos</option></select></label>
+      <label>Tiempo de prealarma<select id="prealarmSeconds"><option value="15">15 segundos</option><option value="20">20 segundos</option><option value="30">30 segundos</option><option value="45">45 segundos</option></select></label>
+      <label>Modo de activación<select id="activationMode"><option value="both">Manual + automática</option><option value="manual">Solo manual</option><option value="automatic">Solo automática</option></select></label>
+      <label>Canal de comunicación previsto<select id="communication"><option value="iphone">iPhone mediante BLE</option><option value="android">Android mediante BLE (futuro)</option></select></label>
+      <label class="check-row"><input type="checkbox" id="testMode" checked disabled><span><b>Entorno de pruebas</b><small>Siempre activo en esta versión. No se puede desactivar.</small></span></label>
+      <div class="actions"><button class="primary" type="submit">Guardar configuración</button><button class="secondary" type="button" id="resetConfig">Restablecer</button></div>
+      <span class="save-state" id="settingsSave"></span>
+    </form>
+  </section>
+
+  <section class="panel" id="history">
+    <div class="section-head"><div><p class="eyebrow">TRAZABILIDAD</p><h2>Historial de eventos</h2></div><button class="text-button" id="clearHistory">Borrar historial</button></div>
+    <div id="historyList" class="history-list"><div class="empty">Todavía no hay eventos registrados.</div></div>
+  </section>
+</main>
+<footer><span>PULSERA SOS · V1.0</span><span>Prototipo de desarrollo · No usar para emergencias reales</span></footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script src="./app.js"></script>
+</body>
+</html>

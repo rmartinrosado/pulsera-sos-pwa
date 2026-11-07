@@ -1,0 +1,19 @@
+{
+  "name": "PULSERA SOS",
+  "short_name": "PULSERA SOS",
+  "description": "Panel de configuración y pruebas del proyecto PULSERA SOS",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b1220",
+  "theme_color": "#101a2b",
+  "icons": [
+    {
+      "src": "./assets/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
